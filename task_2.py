@@ -19,12 +19,14 @@ def ucs(graph, start, end, max_energy_cost):
     #4. total energy cost to node
     pq = [(0, start, [], 0)]
     visited = set()
+    nodes_expanded = 0
 
     while pq:
         cost, current_node, path, energy_cost = heapq.heappop(pq)
+        nodes_expanded += 1
 
         if current_node == end:
-            return path + [end], cost, energy_cost
+            return path + [end], cost, energy_cost, nodes_expanded
 
         if current_node in visited:
             continue
@@ -40,16 +42,17 @@ def ucs(graph, start, end, max_energy_cost):
             if new_energy_cost <= max_energy_cost:
                 heapq.heappush(pq, (new_cost, neighbor, path + [current_node], new_energy_cost))
 
-    return [], float('inf'), float('inf') # no valid path found
+    return [], float('inf'), float('inf'), float('inf') # no valid path found
 
 start_node = '1'
 end_node = '50'
 energy_budget = 287932
 
-path, cost, energy_used = ucs(graph, start_node, end_node, energy_budget)
+path, cost, energy_used, nodes_expanded = ucs(graph, start_node, end_node, energy_budget)
 if path:
     print(f"Shortest path: {'->'.join(path)}")
     print(f"Shortest distance: {cost}")
     print(f"Total energy cost: {energy_used}")
+    print("Nodes expanded:", nodes_expanded)
 else:
     print(f"No feasible path found from {start_node} to {end_node} within the energy budget")
