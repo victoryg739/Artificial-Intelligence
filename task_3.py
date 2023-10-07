@@ -86,5 +86,5 @@ cost = load_data("Cost.json")
 dist = load_data("Dist.json")
 coord = load_data("Coord.json")
 
-print("------ A* with energy budget ------")
+print("------ Task 3: A* with energy budget ------")
 astar(graph, dist, cost, coord, START, END, MAX_ENERGY)

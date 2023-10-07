@@ -50,7 +50,7 @@ energy_budget = 287932
 
 path, cost, energy_used, nodes_expanded = ucs(graph, start_node, end_node, energy_budget)
 if path:
-    print("------ UCS with energy budget ------")
+    print("------ Task 2: UCS with energy budget ------")
     print(f"Shortest path: {'->'.join(path)}")
     print(f"Shortest distance: {cost}")
     print(f"Total energy cost: {energy_used}")
