@@ -61,7 +61,7 @@ def astar(graph, dist, cost, coord, start, end, max_energy):
     path.reverse()
 
     #printing results
-    print("Shortest path:", " -> ".join(path))
+    print("Shortest path:", "->".join(path))
     print("Shortest distance:", dist_from_source[end])
     print("Total energy cost:", energy_from_source[end])
     print("Nodes expanded:", nodes_expanded)
