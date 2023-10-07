@@ -62,7 +62,7 @@ def astar(graph, dist, cost, coord, start, end, max_energy):
 
     #printing results
     print("Shortest path:", " -> ".join(path))
-    print("Shortest Distance:", dist_from_source[end])
+    print("Shortest distance:", dist_from_source[end])
     print("Total energy cost:", energy_from_source[end])
     print("Nodes expanded:", nodes_expanded)
 
@@ -86,5 +86,5 @@ cost = load_data("Cost.json")
 dist = load_data("Dist.json")
 coord = load_data("Coord.json")
 
-print("------ A* with energy bucket ------")
+print("------ A* with energy budget ------")
 astar(graph, dist, cost, coord, START, END, MAX_ENERGY)
