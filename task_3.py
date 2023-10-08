@@ -65,6 +65,7 @@ def astar(graph, dist, cost, coord, start, end, max_energy):
     print("Shortest distance:", dist_from_source[end])
     print("Total energy cost:", energy_from_source[end])
     print("Nodes expanded:", nodes_expanded)
+    print()
 
 def heuristic(neighbour_coord, end_coord):
     x_dist = end_coord[0] - neighbour_coord[0]

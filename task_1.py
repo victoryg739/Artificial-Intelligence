@@ -1,48 +1,66 @@
 import json
+import heapq
 
-# Load data from JSON files
-with open('G.json', 'r') as f:
-    G = json.load(f)
+#constants
+START = '1'
+END = '50'
 
-with open('Dist.json', 'r') as f:
-    Dist = json.load(f)
+def load_data(filename):
+    with open(filename, 'r') as file:
+        return json.load(file)
+    
+def ucs(graph, dist, cost, start, end):
+    path = []
+    pq = []
+    parent = {}
+    dist_from_source = {}
+    energy_from_source = {}
+    
+    dist_from_source[start] = 0
+    energy_from_source[start] = 0
+    parent[start] = "-1"
+    heapq.heappush(pq, (0, start)) #pushing start node to pq
 
-# Dijkstra's algorithm
-def dijkstra(graph, start, end):
-    # initialize distances and predecessors
-    distances = {node: float('infinity') for node in graph}
-    predecessors = {node: None for node in graph}
-    distances[start] = 0
-
-    nodes = list(graph.keys())
-
-    while nodes:
-        # get node with smallest distance
-        current_node = min(nodes, key=lambda node: distances[node])
-        nodes.remove(current_node)
-
-        if distances[current_node] == float('infinity'):
+    while pq:
+        g_cost, curNode = heapq.heappop(pq)
+        if(curNode == end): #reached goal
             break
+        
+        for neighbour in graph[curNode]:
+            pair = curNode + ',' + neighbour
+            g_cost = dist_from_source[curNode] + dist[pair] #g cost to neighbour node via cur node
+            energy_cost = energy_from_source[curNode] + cost[pair] #real energy cost to neighbour node via cur node
 
-        # check if reached the destination
-        if current_node == end:
-            return distances[current_node], get_path(predecessors, start, end)
+            if(neighbour not in dist_from_source): #node has not been generated before
+                dist_from_source[neighbour] = g_cost
+                energy_from_source[neighbour] = energy_cost
+                parent[neighbour] = curNode
+                heapq.heappush(pq, (g_cost, neighbour))
+            elif(neighbour in dist_from_source): #node has been generated from another parent (expanded node) before
+                if(dist_from_source[neighbour] > g_cost): #g cost to the node is a longer path via the prev parent.. we will go through cur node instead since h_cost is the same
+                    dist_from_source[neighbour] = g_cost
+                    energy_from_source[neighbour] = energy_cost
+                    parent[neighbour] = curNode
+                    heapq.heappush(pq, (g_cost, neighbour))
 
-        # update distances for neighbors
-        for neighbor in graph[current_node]:
-            new_dist = distances[current_node] + Dist.get(f"{current_node},{neighbor}", float('infinity'))
-            if new_dist < distances[neighbor]:
-                distances[neighbor] = new_dist
-                predecessors[neighbor] = current_node
+    #building the full path
+    curNode = end
+    while curNode != "-1":
+        path.append(curNode)
+        curNode = parent[curNode]
+    path.reverse()
 
-    return float('infinity'), []
+    #printing results
+    print("Shortest path:", "->".join(path))
+    print("Shortest distance:", dist_from_source[end])
+    print("Total energy cost:", energy_from_source[end])
+    print()
 
-def get_path(predecessors, start, end):
-    path = [end]
-    while path[-1] != start:
-        path.append(predecessors[path[-1]])
-    return path[::-1]
+#Main Execution
+#loading files
+graph = load_data("G.json")
+cost = load_data("Cost.json")
+dist = load_data("Dist.json")
 
-distance, path = dijkstra(G, '1', '50')
-print("Shortest path:", "->".join(path))
-print("Shortest distance:", distance)
+print("------ Task 1: UCS ------")
+ucs(graph, dist, cost, START, END)
